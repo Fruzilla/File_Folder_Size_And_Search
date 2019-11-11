@@ -46,9 +46,10 @@ public class Main {
 
     public static void findFileNode(String path){
         FileNode root = new FileNode(path);
-        System.out.println("The size is " + displaySize(root.getSize()));
+        System.out.println("The size is " + root.displaySize(root.getSize()) + " / " + root.displaySize(root.getTotalSize()) + " total");
         System.out.println("TOSTRING:");
         System.out.println(root.toString());
+        //TODO display run time
         root.findLargest(10);
     }
 

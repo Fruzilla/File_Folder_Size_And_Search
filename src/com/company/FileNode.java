@@ -2,7 +2,7 @@ package com.company;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
+//import java.util.Comparator;
 import java.util.Collections;
 
 public class FileNode {
@@ -82,16 +82,16 @@ public class FileNode {
         return child_files;
     }
 
-    //TODO make this display the file size more accurately
+    //displays the given file size in a more readable format. converts the raw byte size to mb, gb, ect with 3 decimal point accuracy
     public String displaySize(long size){
-        long temp = size;
+        double temp = size;
         int counter = 0;
         long div = 1024;
         String result = size + " bytes";
-        String[] post = {"kb", "mb", "gb", "pb"};
+        String[] post = {"kb", "mb", "gb", "pb", "eb", "zb", "yb"};
         while(temp > div){
             temp = temp / div;
-            result = temp + " " + post[counter];
+            result = String.format("%.3f", temp) + " " + post[counter];
             counter++;
         }
         return result;
@@ -198,14 +198,14 @@ public class FileNode {
     }
 
     public String toString(){
-        String str = this_file.getPath() + "(Size: " + displaySize(size) + " | Total Size: " + displaySize(total_size) + ")\n\n";
+        String str = this_file.getPath() + " (Size: " + displaySize(size) + " | Total Size: " + displaySize(total_size) + ")\n\n";
         for(int i = 0; i < child_dir.size(); i++){
-            str += child_dir.get(i).this_file.getPath() + "(Size: " + displaySize(child_dir.get(i).getSize()) + " | Total Size: " + displaySize(child_dir.get(i).getTotalSize()) + ")\n";
+            str += child_dir.get(i).this_file.getPath() + " (Size: " + displaySize(child_dir.get(i).getSize()) + " | Total Size: " + displaySize(child_dir.get(i).getTotalSize()) + ")\n";
 
         }
 
         for(int i = 0; i < child_files.size(); i++){
-            str += child_files.get(i).this_file.getName() + "(Size: " + displaySize(child_files.get(i).getSize()) + ")\n";
+            str += child_files.get(i).this_file.getName() + " (Size: " + displaySize(child_files.get(i).getSize()) + ")\n";
         }
         str += child_files.size() + " files, " + child_dir.size() + " directories";
         return str;
