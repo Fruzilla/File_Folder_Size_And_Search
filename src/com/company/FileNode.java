@@ -163,14 +163,89 @@ public class FileNode {
 
     //TODO implement
     //find the largest files and directories of every subdirectory of the file node
-    public void findLargestDeep(){
+    public void findLargestDeep(int num_files){
+        ArrayList<FileNode> largest_files = new ArrayList<FileNode>(num_files);
+        ArrayList<FileNode> largest_dir = new ArrayList<FileNode>(num_files);
 
+        findLargestDeepHelper(this, largest_files, largest_dir, 0, num_files);
+
+        System.out.println("Analysis of " + this_file.getPath() + " and all subdirectories");
+
+        System.out.println("Largest Files:");
+        for(int i = largest_files.size()-1; i >= 0; i--){
+            System.out.println(largest_files.size() - i + ". " + largest_files.get(i).this_file.getPath() + " - " + displaySize(largest_files.get(i).size));
+        }
+
+        System.out.println("\nLargest Directories:");
+        for(int i = largest_dir.size()-1; i >= 0; i--){
+            System.out.println(largest_dir.size() - i + ". " + largest_dir.get(i).this_file.getPath() + " - " + displaySize(largest_dir.get(i).total_size));
+        }
     }
 
-    //TODO implement
     //a private helper function meant to recursively find the largest directories and files of all subdirectories
-    private void findLargestDeepHelper(ArrayList<FileNode> largest_files, ArrayList<FileNode> largest_dir){
+    private void findLargestDeepHelper(FileNode current, ArrayList<FileNode> largest_files, ArrayList<FileNode> largest_dir, int depth, int num_files){
 
+        //DEBUG
+        for(int i = 0; i < depth; i++){
+            System.out.print("\t");
+        }
+        System.out.println(current.this_file.getPath() + " " + depth);
+        //END DEBUG */
+        ArrayList<FileNode> curr_child_dir = current.getChildDirs();
+        ArrayList<FileNode> curr_child_files = current.getChildFiles();
+        if(curr_child_files.size() == 0 && curr_child_dir.size() == 0){ //no files and no subdir, exit immediately
+            return;
+        }
+        //check files in root dir
+        for(int i = 0; i < curr_child_files.size(); i++){
+            FileNode temp = curr_child_files.get(i);
+            if(largest_files.size() < num_files){   //if there's less than num_files items, add to list. When capacity is hit, sort.
+                largest_files.add(temp);
+                if(largest_files.size() == num_files){
+                    Collections.sort(largest_files, new FileComparator());
+                }
+            }
+            else{   //full capacity. If found file is larger than the smallest file, figure out where to insert it and do so. Use binary search and .remove(capacity-1), add(node, pos)
+                if(temp.getSize() > largest_files.get(0).getSize()){
+                    //binary search
+                    int pos = BinarySearch(largest_files, 0, num_files-1, temp.getSize());
+                    largest_files.remove(0);
+                    largest_files.add(pos, temp);
+                }
+            }
+        }
+        if(largest_files.size() < num_files){ //if it never fills up, ensure that it still gets sorted
+            Collections.sort(largest_files, new FileComparator());
+        }
+
+        //check subdirs
+        for(int i = 0; i < curr_child_dir.size(); i++){
+            FileNode temp = curr_child_dir.get(i);
+            if(largest_dir.size() < num_files){   //if there's less than num_files items, add to list. When capacity is hit, sort.
+                largest_dir.add(temp);
+                if(largest_dir.size() == num_files){
+                    Collections.sort(largest_dir, new FileTotalComparator());
+                }
+            }
+            else{   //full capacity. If found file is larger than the smallest file, figure out where to insert it and do so. Use binary search and .remove(capacity-1), add(node, pos)
+                if(temp.getTotalSize() > largest_dir.get(0).getTotalSize()){
+                    //binary search
+                    int pos = BinarySearch(largest_dir, 0, num_files-1, temp.getTotalSize());
+                    largest_dir.remove(0);
+                    largest_dir.add(pos, temp);
+                }
+            }
+        }
+
+        if(largest_dir.size() < num_files){
+            Collections.sort(largest_dir, new FileTotalComparator());
+        }
+
+        for(int i = 0; i < curr_child_dir.size(); i++){  //recursion call
+            FileNode temp = curr_child_dir.get(i);
+            //System.out.println(child_dir);
+            findLargestDeepHelper(temp, largest_files, largest_dir, depth + 1, num_files);
+        }
     }
 
     //binary search implementation to find where to insert
@@ -207,7 +282,7 @@ public class FileNode {
         for(int i = 0; i < child_files.size(); i++){
             str += child_files.get(i).this_file.getName() + " (Size: " + displaySize(child_files.get(i).getSize()) + ")\n";
         }
-        str += child_files.size() + " files, " + child_dir.size() + " directories";
+        str += child_files.size() + " files, " + child_dir.size() + " directories\n";
         return str;
     }
 

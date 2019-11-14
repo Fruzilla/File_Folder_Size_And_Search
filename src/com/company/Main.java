@@ -9,8 +9,16 @@ public class Main {
         //test();
         //findFile("C:/Users/Myself/Desktop/Temp");
         //System.out.println(displaySize(63410));
-        findFileNode("C:/Users/Myself/Desktop/Temp");
+        //findFileNode("C:/Users/Myself/Downloads");
+        //findFileNode("C:/Users/Myself/Desktop/Temp");
         //findFileNode("C:/Users/Myself/Desktop/Temp/bsnes-mercury-2017.06.28_b68bd0a");
+
+        //findFileNodeDeep("C:/Users/Myself/Desktop/Temp");
+        findFileNodeDeep("C:/Users/Myself/Music");
+        //findFileNodeDeep("C:/");
+
+
+
     }
 
     public static void test(){
@@ -51,6 +59,15 @@ public class Main {
         System.out.println(root.toString());
         //TODO display run time
         root.findLargest(10);
+    }
+
+    public static void findFileNodeDeep(String path){
+        FileNode root = new FileNode(path);
+        System.out.println("The size is " + root.displaySize(root.getSize()) + " / " + root.displaySize(root.getTotalSize()) + " total");
+        System.out.println("TOSTRING:");
+        System.out.println(root.toString());
+        //TODO display run time
+        root.findLargestDeep(10);
     }
 
     public static String displaySize(long size){
