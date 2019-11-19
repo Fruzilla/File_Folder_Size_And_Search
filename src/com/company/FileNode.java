@@ -60,10 +60,7 @@ public class FileNode {
     }
 
     public FileNode(File file){
-        this_file = file;
-        //size
-
-        //children
+        this(file.getPath());
     }
 
     public long getSize(){
@@ -87,14 +84,12 @@ public class FileNode {
         double temp = size;
         int counter = 0;
         long div = 1024;
-        String result = size + " bytes";
-        String[] post = {"kb", "mb", "gb", "pb", "eb", "zb", "yb"};
+        String[] post = {"bytes", "kb", "mb", "gb", "tb", "pb", "eb", "zb", "yb"};
         while(temp > div){
             temp = temp / div;
-            result = String.format("%.3f", temp) + " " + post[counter];
             counter++;
         }
-        return result;
+        return String.format("%.3f", temp) + " " + post[counter];
     }
 
     //finds the largest folders and files in the current directory
@@ -161,7 +156,7 @@ public class FileNode {
         }
     }
 
-    //TODO implement
+    //TODO calculate largest directories by the size of the directory itself and not the total size
     //find the largest files and directories of every subdirectory of the file node
     public void findLargestDeep(int num_files){
         ArrayList<FileNode> largest_files = new ArrayList<FileNode>(num_files);
@@ -184,8 +179,9 @@ public class FileNode {
 
     //a private helper function meant to recursively find the largest directories and files of all subdirectories
     private void findLargestDeepHelper(FileNode current, ArrayList<FileNode> largest_files, ArrayList<FileNode> largest_dir, int depth, int num_files){
-
+        /*
         //DEBUG
+        //can use this to print out/write to file the structure of the directories
         for(int i = 0; i < depth; i++){
             System.out.print("\t");
         }
@@ -272,10 +268,18 @@ public class FileNode {
 
     }
 
+    //given a path to a file, check that it exists (ex: D:/Photos/wallpaper.jpg)
+    //alternatively, if given a file name, check folder and all subdirs for that file
+    //TODO implement
+    public Boolean searchForFile(String filepath){
+        return false;
+
+    }
+
     public String toString(){
-        String str = this_file.getPath() + " (Size: " + displaySize(size) + " | Total Size: " + displaySize(total_size) + ")\n\n";
+        String str = this_file.getPath() + " (Size: " + displaySize(size) + " | Total Size: " + displaySize(total_size) +")\n\n";
         for(int i = 0; i < child_dir.size(); i++){
-            str += child_dir.get(i).this_file.getPath() + " (Size: " + displaySize(child_dir.get(i).getSize()) + " | Total Size: " + displaySize(child_dir.get(i).getTotalSize()) + ")\n";
+            str += child_dir.get(i).this_file.getPath() + " (Size: " + displaySize(child_dir.get(i).getSize()) + " | Total Size: " + displaySize(child_dir.get(i).getTotalSize())  + " | Files: " + child_dir.get(i).getChildFiles().size() + " | Directories: " + child_dir.get(i).getChildDirs().size() + ")\n";
 
         }
 
@@ -287,6 +291,11 @@ public class FileNode {
     }
 
     //TODO make a variation of toString that displays the contents and size of each file/subdir
+    public String toStringDeep(){
+        return "Not implemented yet...";
+    }
+
+    //helper function for deep string
 }
 
 
