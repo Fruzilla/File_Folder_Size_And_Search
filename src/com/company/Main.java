@@ -20,7 +20,10 @@ public class Main {
         //findFileNodeDeep("C:/Program Files (x86)/Steam/SteamApps/common");
         //findFileNodeDeep("C:/");
 
-        main_interface();
+        searchFile("C:/Users/Myself/Desktop/Temp", "favicon.ico");
+        searchFile("C:/Users/Myself/Desktop/Temp", "favicon");
+
+        //main_interface();
     }
 
     public static void test(){
@@ -70,6 +73,15 @@ public class Main {
         System.out.println(root.toString());
         //TODO display run time
         root.findLargestDeep(10);
+    }
+
+    public static void searchFile(String path, String file){
+        System.out.println("Searching for " + file);
+        FileNode root = new FileNode(path);
+        long startTime = System.currentTimeMillis();
+        root.searchForFile(file);
+        long stopTime = System.currentTimeMillis();
+        System.out.println("Search time: " + showRunTime(startTime, stopTime));
     }
 
     public static String displaySize(long size){
@@ -122,7 +134,6 @@ public class Main {
 
         System.out.println("Analyzing directory " + chosen_dir.getPath());
         long startTime = System.currentTimeMillis();
-        //TODO time how long filenode creation takes
         FileNode dir = new FileNode(chosen_dir);
         long stopTime = System.currentTimeMillis();
         System.out.println("Time to analyze: " + showRunTime(startTime, stopTime));

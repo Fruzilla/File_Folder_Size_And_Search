@@ -268,12 +268,53 @@ public class FileNode {
 
     }
 
-    //given a path to a file, check that it exists (ex: D:/Photos/wallpaper.jpg)
-    //alternatively, if given a file name, check folder and all subdirs for that file
-    //TODO implement
+    //given a file name, check folder and all subdirs for that file
+    //example input would be "new_wallpaper", "new_wallpaper.jpg"
+    //find files with similar names in case the exact file can't be found
+    //TODO find similarly named files
     public Boolean searchForFile(String filepath){
-        return false;
+        ArrayList<String> found_path = new ArrayList<String>();
+        Boolean result = fileSearchHelper(this, filepath, found_path);
+        if(result){
+            System.out.println("File found! Located at " + found_path);
+        }
+        else{
+            System.out.println("File not found");
+        }
+        return result;
+    }
 
+    //a helper function to recursively find a file
+    private Boolean fileSearchHelper(FileNode current, String file_to_find, ArrayList<String> found_path){
+        ArrayList<FileNode> files = current.getChildFiles();
+        ArrayList<FileNode> subdirs = current.getChildDirs();
+        Boolean result = false;
+
+        //System.out.println(current.this_file.getPath());
+
+        if(files.size() == 0 && subdirs.size() == 0){ //no files and no subdir, exit immediately
+            return false;
+        }
+        for(int i = 0; i < files.size(); i++){  //check files
+            FileNode temp = files.get(i);
+            int end = temp.this_file.getName().indexOf(".");
+            String filename_without_ext = temp.this_file.getName();
+            if(end != -1){  //if it contains a period and file extention, remove it
+                filename_without_ext = temp.this_file.getName().substring(0, end);
+            }
+            if (filename_without_ext.equals(file_to_find) || temp.this_file.getName().equals(file_to_find)){    //by checking both, we can find the file regardless of whether the user provided a file extention
+                found_path.add(temp.this_file.getPath());
+                result = true;
+            }
+        }
+
+        for(int i = 0; i < subdirs.size(); i++){    //check subdirs
+            FileNode temp = subdirs.get(i);
+            if(fileSearchHelper(temp, file_to_find, found_path) == true){
+                result = true;
+            }
+        }
+        return result;
     }
 
     public String toString(){
