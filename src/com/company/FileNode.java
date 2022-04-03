@@ -271,7 +271,7 @@ public class FileNode {
     //given a file name, check folder and all subdirs for that file
     //example input would be "new_wallpaper", "new_wallpaper.jpg"
     //find files with similar names in case the exact file can't be found
-    //TODO find similarly named files
+    //TODO find similarly named files (implement in fileSearchHelper)
     public Boolean searchForFile(String filepath){
         ArrayList<String> found_path = new ArrayList<String>();
         Boolean result = fileSearchHelper(this, filepath, found_path);
@@ -284,32 +284,48 @@ public class FileNode {
         return result;
     }
 
-    //a helper function to recursively find a file
+    //a helper function to recursively find a file.
+    //Returns true if an exact match for a file was found, false if otherwise.
+    //Will print out any similarly named files
     private Boolean fileSearchHelper(FileNode current, String file_to_find, ArrayList<String> found_path){
         ArrayList<FileNode> files = current.getChildFiles();
         ArrayList<FileNode> subdirs = current.getChildDirs();
         Boolean result = false;
 
         //System.out.println(current.this_file.getPath());
+        //System.out.println("Files: " + files.toString());
+        //System.out.println("Subdirs: " + subdirs.toString());
 
         if(files.size() == 0 && subdirs.size() == 0){ //no files and no subdir, exit immediately
             return false;
         }
         for(int i = 0; i < files.size(); i++){  //check files
             FileNode temp = files.get(i);
-            int end = temp.this_file.getName().indexOf(".");
-            String filename_without_ext = temp.this_file.getName();
+            int end = temp.this_file.getName().lastIndexOf(".");
+            String filename_without_ext = temp.this_file.getName().toLowerCase();
             if(end != -1){  //if it contains a period and file extention, remove it
-                filename_without_ext = temp.this_file.getName().substring(0, end);
+                filename_without_ext = filename_without_ext.substring(0, end);
             }
-            if (filename_without_ext.equals(file_to_find) || temp.this_file.getName().equals(file_to_find)){    //by checking both, we can find the file regardless of whether the user provided a file extention
+            //System.out.println("Edited: " + filename_without_ext + " | Original: " + temp.this_file.getName()); //DEBUG
+            if (filename_without_ext.equals(file_to_find) || temp.this_file.getName().toLowerCase().equals(file_to_find)){    //by checking both, we can find the file regardless of whether the user provided a file extention
                 found_path.add(temp.this_file.getPath());
                 result = true;
             }
+            if(!result && filename_without_ext.contains(file_to_find)){
+                System.out.println("Similar file found: " + temp.this_file.getName() + " in " + temp.this_file.getPath());
+            }
+
         }
 
         for(int i = 0; i < subdirs.size(); i++){    //check subdirs
             FileNode temp = subdirs.get(i);
+            //check if subdir is equal to the query
+            String subdirName = temp.this_file.getName().toLowerCase();
+            if(subdirName.equals(file_to_find)){
+                result = true;
+                found_path.add(temp.this_file.getPath());
+            }
+
             if(fileSearchHelper(temp, file_to_find, found_path) == true){
                 result = true;
             }
@@ -317,6 +333,7 @@ public class FileNode {
         return result;
     }
 
+    //TODO: edit file print so that it does not print "0 files, 0 directories" for every single file
     public String toString(){
         String str = this_file.getPath() + " (Size: " + displaySize(size) + " | Total Size: " + displaySize(total_size) +")\n\n";
         for(int i = 0; i < child_dir.size(); i++){

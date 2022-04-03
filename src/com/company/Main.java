@@ -1,6 +1,7 @@
 package com.company;
 
 import java.io.File;
+import java.util.Locale;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
 
@@ -8,26 +9,38 @@ public class Main {
 
     public static void main(String[] args) {
         //test();
-        //findFile("C:/Users/Myself/Desktop/Temp");
+        //findFile("D:/TempFileSearch");
+        //findFile("/run/media/frank/Storage Mule/TempFileSearch/test.txt");
         //System.out.println(displaySize(63410));
 
         //findFileNode("C:/Users/Myself/Downloads");
-        //findFileNode("C:/Users/Myself/Desktop/Temp");
-        //findFileNode("C:/Users/Myself/Desktop/Temp/bsnes-mercury-2017.06.28_b68bd0a");
+        //findFileNode("D:/TempFileSearch");
 
-        //findFileNodeDeep("C:/Users/Myself/Desktop/Temp");
-        //findFileNodeDeep("C:/Users/Myself/Music");
-        //findFileNodeDeep("C:/Program Files (x86)/Steam/SteamApps/common");
+        //findFileNodeDeep("/run/media/frank/Storage Mule/TempFileSearch/");
+        //findFileNodeDeep("D:/Music");
+        //findFileNodeDeep("D:/SteamLibrary/steamapps/");
         //findFileNodeDeep("C:/");
 
-        searchFile("C:/Users/Myself/Desktop/Temp", "favicon.ico");
-        searchFile("C:/Users/Myself/Desktop/Temp", "favicon");
+        //searchFile("/run/media/frank/Storage Mule/TempFileSearch/", "favicon.ico");
+        //searchFile("/run/media/frank/Storage Mule/TempFileSearch/", "favicon.png");
+        //searchFile("/run/media/frank/Storage Mule/TempFileSearch/", "favicon");
+
+        //searchFile("/run/media/frank/Storage Mule/TempFileSearch/", "js");
+        //searchFile("/run/media/frank/Storage Mule/TempFileSearch/", "JS");
+
+        //similar file name test
+        searchFile("/run/media/frank/Storage Mule/Music/Rock/The Beatles/", "all you need");
+        searchFile("/run/media/frank/Storage Mule/Music/Rock/The Beatles/", "Sun");
+        //searchFile("/run/media/frank/Storage Mule/Music/Rock/The Beatles/", "sun");
+        //searchFile("/run/media/frank/Storage Mule/Music/Rock/The Beatles/", "11 - All You Need Is Love (Remastered).mp3");
+        //searchFile("/run/media/frank/Storage Mule/Music/Rock/The Beatles/", "11 - All You Need Is Love (Remastered)");
 
         //main_interface();
     }
 
+    //function to test 
     public static void test(){
-        File test = new File("C:/Users/Myself/Desktop/Temp");
+        File test = new File("/run/media/frank/Storage Mule/TempFileSearch");
         System.out.println(test.list());
         System.out.println(test.toString());
         System.out.println(test.isDirectory());
@@ -36,12 +49,13 @@ public class Main {
         String[] files = test.list();
         for(int i = 0; i < files.length; i++){
             long div = 1024; //kb -> mb -> gb -> tb -> pb ect.
-            File temp = new File(test.toString() + "/" + files[i]);
+            File temp = new File(test + "/" + files[i]);
             //file.toString prints full path, file.getName prints the file name only
             System.out.println(temp.getName() + "\t" + temp.length()/div);
         }
     }
 
+    //creates a File object, given a directory or file path. Prints size of dir/file
     public static void findFile(String path){
         System.out.println(path);
         File root = new File(path);
@@ -57,33 +71,39 @@ public class Main {
         }
     }
 
+    //creates a FileNode object given a directory or file path. Prints the 10 largest files in the node.
     public static void findFileNode(String path){
         FileNode root = new FileNode(path);
         System.out.println("The size is " + root.displaySize(root.getSize()) + " / " + root.displaySize(root.getTotalSize()) + " total");
         System.out.println("TOSTRING:");
-        System.out.println(root.toString());
+        System.out.println(root);
         //TODO display run time
         root.findLargest(10);
     }
 
+    //creates a FileNode object given a directory or file path. Prints the 10 largest files found within the node's subdirectories.
     public static void findFileNodeDeep(String path){
         FileNode root = new FileNode(path);
         System.out.println("The size is " + root.displaySize(root.getSize()) + " / " + root.displaySize(root.getTotalSize()) + " total");
         System.out.println("TOSTRING:");
-        System.out.println(root.toString());
+        System.out.println(root);
         //TODO display run time
         root.findLargestDeep(10);
     }
 
+    //searches directory for a file
     public static void searchFile(String path, String file){
-        System.out.println("Searching for " + file);
+        System.out.println("Searching for " + file + " in directory " + path);
         FileNode root = new FileNode(path);
+        file = file.toLowerCase();
         long startTime = System.currentTimeMillis();
         root.searchForFile(file);
         long stopTime = System.currentTimeMillis();
         System.out.println("Search time: " + showRunTime(startTime, stopTime));
     }
 
+    //displays file size with proper formatting. Converts byte size to kb, mb, gb, ect
+    //copy of the function found in FileNode
     public static String displaySize(long size){
         long temp = size;
         int counter = 0;
@@ -98,6 +118,7 @@ public class Main {
         return result;
     }
 
+    //loads the GUI
     public static void main_interface(){
         //ask user for path
         File chosen_dir = new File(System.getProperty("user.home"));
@@ -137,7 +158,7 @@ public class Main {
         FileNode dir = new FileNode(chosen_dir);
         long stopTime = System.currentTimeMillis();
         System.out.println("Time to analyze: " + showRunTime(startTime, stopTime));
-        System.out.println(dir.toString());
+        System.out.println(dir);
 
         // ask for number of files/number of folders
 
