@@ -278,7 +278,7 @@ public class FileNode {
             System.out.println("File found! Located at " + found_path);
         }
         else{
-            System.out.println("File not found");
+            System.out.println("Exact file not found");
         }
         return result;
     }
@@ -293,7 +293,7 @@ public class FileNode {
 
         //System.out.println(current.this_file.getPath());
         //System.out.println("Files: " + files.toString());
-        //System.out.println("Subdirs: " + subdirs.toString());
+        //System.out.println("Subdirs: " + subdirs.toString()); //use this and not files
 
         if(files.size() == 0 && subdirs.size() == 0){ //no files and no subdir, exit immediately
             return false;
@@ -334,7 +334,7 @@ public class FileNode {
 
     //TODO: edit file print so that it does not print "0 files, 0 directories" for every single file
     public String toString(){
-        String str = this_file.getPath() + " (Size: " + displaySize(size) + " | Total Size: " + displaySize(total_size) +")\n\n";
+        String str = this_file.getPath() + " (Size: " + displaySize(size) + " | Total Size: " + displaySize(total_size) +")\n";
         for(int i = 0; i < child_dir.size(); i++){
             str += child_dir.get(i).this_file.getPath() + " (Size: " + displaySize(child_dir.get(i).getSize()) + " | Total Size: " + displaySize(child_dir.get(i).getTotalSize())  + " | Files: " + child_dir.get(i).getChildFiles().size() + " | Directories: " + child_dir.get(i).getChildDirs().size() + ")\n";
 
@@ -343,7 +343,9 @@ public class FileNode {
         for(int i = 0; i < child_files.size(); i++){
             str += child_files.get(i).this_file.getName() + " (Size: " + displaySize(child_files.get(i).getSize()) + ")\n";
         }
-        str += child_files.size() + " files, " + child_dir.size() + " directories\n";
+        if(child_dir.size() > 0 || child_files.size() > 0){
+            str += child_files.size() + " files, " + child_dir.size() + " directories";
+        }
         return str;
     }
 
@@ -352,7 +354,10 @@ public class FileNode {
         return "Not implemented yet...";
     }
 
-    //helper function for deep string
+    //helper function for deep string, keep track of the levels of depth to help format prints
+
+    //TODO save analysis of directory to file. One function for just the dir, another for a deeper analysis.
+
 }
 
 

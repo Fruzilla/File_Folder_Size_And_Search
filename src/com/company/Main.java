@@ -16,8 +16,8 @@ public class Main {
         //findFileNode("C:/Users/Myself/Downloads");
         //findFileNode("D:/TempFileSearch");
 
-        //findFileNodeDeep("/run/media/frank/Storage Mule/TempFileSearch/");
-        //findFileNodeDeep("D:/Music");
+        findFileNodeDeep("/run/media/frank/Storage Mule/TempFileSearch/");
+        //findFileNodeDeep("/run/media/frank/Storage Mule/Music");
         //findFileNodeDeep("D:/SteamLibrary/steamapps/");
         //findFileNodeDeep("C:/");
 
@@ -29,11 +29,19 @@ public class Main {
         //searchFile("/run/media/frank/Storage Mule/TempFileSearch/", "JS");
 
         //similar file name test
-        searchFile("/run/media/frank/Storage Mule/Music/Rock/The Beatles/", "all you need");
-        searchFile("/run/media/frank/Storage Mule/Music/Rock/The Beatles/", "Sun");
+        //searchFile("/run/media/frank/Storage Mule/Music/Rock/The Beatles/", "all you need");
+        //searchFile("/run/media/frank/Storage Mule/Music/Rock/The Beatles/", "Sun");
         //searchFile("/run/media/frank/Storage Mule/Music/Rock/The Beatles/", "sun");
         //searchFile("/run/media/frank/Storage Mule/Music/Rock/The Beatles/", "11 - All You Need Is Love (Remastered).mp3");
         //searchFile("/run/media/frank/Storage Mule/Music/Rock/The Beatles/", "11 - All You Need Is Love (Remastered)");
+
+        //tostring testing
+
+        //FileNode tester = new FileNode("/run/media/frank/Storage Mule/TempFileSearch/test.txt");
+        //System.out.println(tester.toString());
+
+        //FileNode tester2 = new FileNode("/run/media/frank/Storage Mule/TempFileSearch");
+        //System.out.println(tester2.toString());
 
         //main_interface();
     }
@@ -73,22 +81,26 @@ public class Main {
 
     //creates a FileNode object given a directory or file path. Prints the 10 largest files in the node.
     public static void findFileNode(String path){
+        long startTime = System.currentTimeMillis();
         FileNode root = new FileNode(path);
         System.out.println("The size is " + root.displaySize(root.getSize()) + " / " + root.displaySize(root.getTotalSize()) + " total");
         System.out.println("TOSTRING:");
         System.out.println(root);
-        //TODO display run time
         root.findLargest(10);
+        long stopTime = System.currentTimeMillis();
+        System.out.println("Total Time: " + showRunTime(startTime, stopTime));
     }
 
     //creates a FileNode object given a directory or file path. Prints the 10 largest files found within the node's subdirectories.
     public static void findFileNodeDeep(String path){
+        long startTime = System.currentTimeMillis();
         FileNode root = new FileNode(path);
         System.out.println("The size is " + root.displaySize(root.getSize()) + " / " + root.displaySize(root.getTotalSize()) + " total");
         System.out.println("TOSTRING:");
         System.out.println(root);
-        //TODO display run time
         root.findLargestDeep(10);
+        long stopTime = System.currentTimeMillis();
+        System.out.println("Total Time: " + showRunTime(startTime, stopTime));
     }
 
     //searches directory for a file
@@ -181,6 +193,8 @@ public class Main {
         //gui with different options available?
     }
 
+    //given a start and end time in milliseconds, calculates the total eclipsed time
+    //returns a formatted string representing the time and the unit of time measurement
     public static String showRunTime(long start, long stop){
         String[] postfix = {"ms", "sec", "min", "hr"};
         int counter = 0;
