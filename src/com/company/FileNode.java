@@ -95,8 +95,8 @@ public class FileNode {
     //finds the largest folders and files in the current directory
     //note that this does not inspect any files that may be in subdirectories.
     public void findLargest(int num_files){
-        ArrayList<FileNode> largest_files = new ArrayList<FileNode>(num_files);
-        ArrayList<FileNode> largest_dir = new ArrayList<FileNode>(num_files);
+        ArrayList<FileNode> largest_files = new ArrayList<>(num_files);
+        ArrayList<FileNode> largest_dir = new ArrayList<>(num_files);
 
         //check files in root dir
         for(int i = 0; i < child_files.size(); i++){
@@ -271,7 +271,6 @@ public class FileNode {
     //given a file name, check folder and all subdirs for that file
     //example input would be "new_wallpaper", "new_wallpaper.jpg"
     //find files with similar names in case the exact file can't be found
-    //TODO find similarly named files (implement in fileSearchHelper)
     public Boolean searchForFile(String filepath){
         ArrayList<String> found_path = new ArrayList<String>();
         Boolean result = fileSearchHelper(this, filepath, found_path);
